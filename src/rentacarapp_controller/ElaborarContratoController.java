@@ -1,9 +1,8 @@
 package rentacarapp_controller;
 
+import java.util.Date;
+import java.util.List;
 import rentacarapp_model.*;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import terceiros.AutorizacaoDebitoCartaoCredito;
 import terceiros.SistemaAutorizacaoCartaoCredito;
 
@@ -16,7 +15,7 @@ public class ElaborarContratoController
     {
         m_empresa = empresa;
     }
-
+    
     public void iniciaContratoAluguer()
     {
         m_contratoAluguer = m_empresa.criaContratoAluguer();

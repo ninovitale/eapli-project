@@ -1,8 +1,9 @@
 package rentacarapp_ui;
 
-import rentacarapp_model.*;
 import java.io.IOException;
-import utils.*;
+import java.text.ParseException;
+import rentacarapp_model.Empresa;
+import utils.Utils;
 
 /**
  *
@@ -18,7 +19,7 @@ public class MenuUI
         m_empresa = empresa;
     }
 
-    public void run() throws IOException
+    public void run() throws IOException, ParseException
     {
         do
         {

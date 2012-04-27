@@ -1,6 +1,7 @@
 package rentacarapp_model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,7 +14,14 @@ public class Empresa
     private List<ServicoAdicional> m_listCatalogoServicoAdicional;
     private List<LocalDevolucao> m_listCatalogoLocalDevolucao;
 
-    public Empresa()
+    // Criar o singleton
+    private static Empresa uniqueInstance = new Empresa();
+
+    public static Empresa instance() {
+        return uniqueInstance;
+    }
+    
+    private Empresa()
     {
         m_listCatalogoGrupoAutomovel = new ArrayList<GrupoAutomovel>();
         m_frota = new Frota();

@@ -17,9 +17,9 @@ public class Automovel
 
     public Automovel(String strMatricula, GrupoAutomovel ga, String strCor)
     {
-        setMatricula(strMatricula);
-        setGA(ga);
-        setCor(strCor);
+        this.m_strMatricula = strMatricula;
+        this.m_GA = ga;
+        this.m_strCor = strCor;
     }
 
     public GrupoAutomovel getGA()

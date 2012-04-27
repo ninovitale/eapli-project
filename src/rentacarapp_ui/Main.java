@@ -6,7 +6,6 @@
 package rentacarapp_ui;
 
 import rentacarapp_model.Empresa;
-import rentacarapp_ui.*;
 /**
  *
  * @author Nuno Silva
@@ -20,7 +19,8 @@ public class Main {
     {
         try
         {
-            Empresa empresa = new Empresa();
+            // singleton para evitar mais que uma instanciação
+            Empresa empresa = Empresa.instance();
 
             MenuUI uiMenu = new MenuUI(empresa);
 
@@ -28,7 +28,6 @@ public class Main {
         }
         catch( Exception e )
         {
-            e.printStackTrace();
         }
     }
 

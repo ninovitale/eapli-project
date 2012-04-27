@@ -17,10 +17,10 @@ public class CondutorAutorizado
 
     public CondutorAutorizado(String strNome,String strEndereco,String strNumero,String strValidade)
     {
-        setNome(strNome);
-        setEndereco(strEndereco);
-        setNumeroCartaConducao(strNumero);
-        setValidadeCartaConducao(strValidade);
+        this.m_strNome = strNome;
+        this.m_strEndereco = strEndereco;
+        this.m_strNumeroCartaConducao = strNumero;
+        this.m_strValidadeCartaConducao = strValidade;
     }
 
     public void setEndereco(String strEndereco)

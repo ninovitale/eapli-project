@@ -16,9 +16,9 @@ public class AutorizacaoDebitoCartaoCredito
 
     public AutorizacaoDebitoCartaoCredito(String strNumero, String strValidade, float fValorAutorizado)
     {
-        setNumeroCartao(strNumero);
-        setValidadeCartao(strValidade);
-        setValorAutorizado(fValorAutorizado);
+        this.m_strNumeroCartao = strNumero;
+        this.m_strValidadeCartao = strValidade;
+        this.m_fValorAutorizado = fValorAutorizado;
     }
 
     public void setValorAutorizado(float fValorAutorizado)

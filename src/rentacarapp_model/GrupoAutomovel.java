@@ -83,7 +83,7 @@ public class GrupoAutomovel
     @Override
     public String toString()
     {
-        return getNome() + ", " + getPortas() + ", " + getClasse() + ", " + getCombustivel() + ", " + isArCondicionado()+ ", " + getPrecoDiario();
+        return getNome() + ", " + getPortas() + ", " + getClasse() + ", " + getCombustivel() + ", " + (isArCondicionado() ? "sim" : "não") + ", " + "€" + getPrecoDiario();
     }
 }
 

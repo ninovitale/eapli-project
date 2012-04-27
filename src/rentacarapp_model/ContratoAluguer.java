@@ -1,8 +1,6 @@
 package rentacarapp_model;
 
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import terceiros.AutorizacaoDebitoCartaoCredito;
 
 public class ContratoAluguer
@@ -112,7 +110,8 @@ public class ContratoAluguer
             LinhaServicoAdicional lsa = m_listLinhaServicoAdicional.get(i);
             valorLSA += lsa.getValorLinha();
         }
-        return (nrDias * (valorAuto+valorLSA));
+        
+        return (nrDias * (valorAuto + valorLSA));
     }
 
     public List<CondutorAutorizado> getListCondutorAutorizado()
