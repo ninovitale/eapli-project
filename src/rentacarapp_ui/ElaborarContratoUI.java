@@ -18,8 +18,11 @@ import utils.Utils;
  *
  * @author Nuno Silva
  */
-public class ElaborarContratoUI {
 
+
+public class ElaborarContratoUI {
+    private static Scanner in = new Scanner(System.in);
+    
     private Empresa m_empresa;
     private ElaborarContratoController m_controllerEC;
     
@@ -29,7 +32,6 @@ public class ElaborarContratoUI {
     }
 
     public void run() throws ParseException {
-        Scanner in = new Scanner(System.in);
         
         iniciaContratoAluguer();
 
@@ -163,12 +165,11 @@ public class ElaborarContratoUI {
             } else {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 ddp = dateFormat.parse(data);
-                validEntryDate = true;
                 if (ddp.before(today)) {
                     System.out.println("Data inválida, insira uma data posterior a hoje!");
-                }
+                } else validEntryDate = true;
             }
-        } while (ddp.before(today) || !validEntryDate);
+        } while (!validEntryDate);
 
         return ddp;
     }
@@ -225,7 +226,7 @@ public class ElaborarContratoUI {
                 nOpcao = -1;
             }
 
-            if (nOpcao < 1 || nOpcao > listServicoAdicional.size()) {
+            if (nOpcao < 0 || nOpcao > listServicoAdicional.size()) {
                 System.out.println("Opção inválida!");
             }
         } while (nOpcao < 0 || nOpcao > listServicoAdicional.size());
@@ -409,7 +410,7 @@ public class ElaborarContratoUI {
                 }
             } while (!numValido);
             
-            Date dataValidade = new Date(0, 1, 1);
+            Date dataValidade;
             Date today = new Date();
             boolean cartaDataValida;
             do {
@@ -421,12 +422,11 @@ public class ElaborarContratoUI {
                 } else {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                     dataValidade = dateFormat.parse(strValidade);
-                    cartaDataValida = true;
                     if (dataValidade.before(today)) {
                         System.out.println("Data inválida, insira uma data posterior a hoje!");
-                    }
+                    } else cartaDataValida = true;
                 }
-            } while (dataValidade.before(today) || !cartaDataValida);
+            } while (!cartaDataValida);
             
             m_controllerEC.addCondutorAutorizado(strNome, strEndereco, strNumero, strValidade);
 
@@ -451,25 +451,26 @@ public class ElaborarContratoUI {
 
         String strValidade;
         boolean dataValida;
-        Date dataValidade = new Date(0, 1, 1);
+        Date dataValidade;
         Date today = new Date();
         
         do {
             dataValida = false;
             strValidade = Utils.readLineFromConsole("Introduza Validade do cartão de crédito: ");
-            if (!dataHelper.validaValidadeCartaoCredito(strValidade)) {
+            if (!dataHelper.validaData(strValidade)) {
                 System.out.println("Data inválida, insira de novo!");
             } else {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM-yyyy");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 dataValidade = dateFormat.parse(strValidade);
-                dataValida = true;
                 if (dataValidade.before(today)) {
                     System.out.println("Data inválida, insira uma data posterior a hoje!");
-                }
+                } else dataValida = true;
             }
-        } while (dataValidade.before(today) || !dataValida);
+        } while (!dataValida);
 
         m_controllerEC.setDadosCartaoCredito(strNumero, strValidade);
+        System.out.println("Prima enter para imprimir a autorização de débito em cartão de crédito...");
+        in.nextLine();
     }
 
     private void imprimeAutorizacaoDebitoCartaoCredito() {
@@ -492,6 +493,7 @@ public class ElaborarContratoUI {
 
     private void terminaElaboracaoContratoAluguer() {
         m_controllerEC.terminaElaboracaoContratoAluguer();
+        in.nextLine();
     }
 
     

@@ -1,9 +1,13 @@
 package rentacarapp_controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import rentacarapp_model.*;
+import terceiros.ADCC_AdapterFactory;
 import terceiros.AutorizacaoDebitoCartaoCredito;
+import terceiros.SistemaADCCAdapter;
 import terceiros.SistemaAutorizacaoCartaoCredito;
 
 public class ElaborarContratoController
@@ -94,10 +98,30 @@ public class ElaborarContratoController
     public void setDadosCartaoCredito(String strNumero, String strValidade)
     {
         float fValorCaucao = m_contratoAluguer.getValorAutorizacaoDebito();
-
-        AutorizacaoDebitoCartaoCredito adcc = SistemaAutorizacaoCartaoCredito.autorizacaoDebito(strNumero, strValidade, fValorCaucao);
-
-        m_contratoAluguer.setAutorizacaoCartaoCredito(adcc);
+        
+        ADCC_AdapterFactory adapterFactoryInstance = ADCC_AdapterFactory.getInstance();
+        
+        SistemaADCCAdapter adcc;
+        boolean sistemaValido;
+        do {
+            sistemaValido = false;
+            adcc = adapterFactoryInstance.getADCCAdapter();
+            if (adcc == null) System.out.println("Sistema externo inválido.");
+            else sistemaValido = true;
+        } while (!sistemaValido);
+        
+        Calendar dataCalendar = Calendar.getInstance();
+        dataCalendar.setTime(m_contratoAluguer.getDataDevolucaoPrevista());
+        dataCalendar.add(Calendar.DATE, 10);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        adcc.getAutorizacao("EAPLI", strNumero, strValidade, fValorCaucao, sdf.format(dataCalendar.getTime()));
+       
+        AutorizacaoDebitoCartaoCredito adccAutorizacaoDebitoCartaoCredito = SistemaAutorizacaoCartaoCredito.autorizacaoDebito(strNumero, strValidade, fValorCaucao);
+        
+        m_contratoAluguer.setAutorizacaoCartaoCredito(adccAutorizacaoDebitoCartaoCredito);
+        
+        sdf = new SimpleDateFormat("MMMMM d, yyyy");
+        System.out.format("\nAutorização de débito em cartão de crédito processado!\nValor da caução: €%.2f\nData limite de débito: %s\n\n", fValorCaucao, sdf.format(dataCalendar.getTime()));
     }
 
     public void terminaElaboracaoContratoAluguer()

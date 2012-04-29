@@ -28,11 +28,16 @@ public class RegistarClienteUI {
     public Cliente run()
     {
         iniciaRegistoCliente();
-        String strID = "";
+        String strID;
         boolean bFaz;
         do{
             bFaz=false;
-            strID = Utils.readLineFromConsole("Introduza o BI/Passaporte do cliente: ");
+            do {
+                strID = Utils.readLineFromConsole("Introduza o BI/Passaporte do cliente: ");
+                if (strID.isEmpty()) {
+                    System.out.println("O BI/Passaporte é um campo obrigatório!");
+                }
+            } while (strID.isEmpty());
 
             if (m_controllerRC.existeClienteID(strID))
             {
