@@ -89,6 +89,14 @@ public class ElaborarContratoController
     {
         return m_contratoAluguer.getValorTotal();
     }
+    
+    public void setPoliticaDesconto(int politicaDesconto) {
+            this.m_contratoAluguer.setPoliticaDesconto(politicaDesconto);
+    }
+
+    public float getValorTotalContratoDesconto() {
+        return m_contratoAluguer.getValorTotalDesconto();
+    }
 
     public void addCondutorAutorizado(String strNome, String strEndereco, String strNumero, String strValidade)
     {

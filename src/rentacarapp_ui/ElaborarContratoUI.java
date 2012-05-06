@@ -59,13 +59,30 @@ public class ElaborarContratoUI {
         LocalDevolucao ld = seleccionaLocalDevolucao();
         m_controllerEC.setLocalDevolucao(ld);
 
-        float fTotal = m_controllerEC.getValorTotalContrato();
-        System.out.format("Valor total do contrato: €%.2f%n", fTotal);
+        float valorContratoSemDesconto = m_controllerEC.getValorTotalContrato();
+        System.out.format("Valor total do contrato (sem desconto): €%.2f%n", valorContratoSemDesconto);
         System.out.println("Prima enter para continuar...");
         in.nextLine();
         
         // especificar o cliente
         introduzCliente();
+        
+        // pede ao cliente a poltica de desconto
+        int politicaDesconto = escolherPoliticaDesconto();
+        // define a politica para futuros cálculos
+        this.m_controllerEC.setPoliticaDesconto(politicaDesconto);
+        // pede o valor total do contrato tendo em conta a política de desconto (seja qual for)
+        float valorContratoComDesconto = m_controllerEC.getValorTotalContratoDesconto();
+
+        if (valorContratoSemDesconto == valorContratoComDesconto) {
+            if (politicaDesconto == -1) {
+                System.out.format("%nNenhum desconto foi aplicado. O valor a pagar é: €%.2f%n%n", valorContratoComDesconto);
+            } else {
+                System.out.format("%nNão foi possível aplicar nenhum desconto a este contrato%n(ou escolheu uma política cujos condições de desconto não se aplicam a este cliente,%nou então o sistema detectou que não é elegível para qualquer desconto).%nO valor a pagar é: €%.2f%n%n", valorContratoComDesconto);
+            }
+        } else {
+            System.out.format("%nValor total do contrato (com desconto): €%.2f (-%d%%)%n%n", valorContratoComDesconto, ((int) (100.0 - ((valorContratoComDesconto / valorContratoSemDesconto) * 100.0))));
+        }
 
         introduzCondutoresAutorizados();
 
@@ -307,6 +324,60 @@ public class ElaborarContratoUI {
         }
         m_controllerEC.setCliente(c);
     }
+    
+    private int escolherPoliticaDesconto() {
+        String strResposta;
+        int politicaDesconto = -1;
+        boolean chosen;
+
+        do {
+            chosen = false;
+            strResposta = Utils.readLineFromConsole("\nDeseja aplicar desconto sobre este contrato? (S/N)");
+            if (strResposta.equalsIgnoreCase("S") || strResposta.equalsIgnoreCase("N")) {
+                chosen = true;
+                // se não se aplica desconto
+                if (strResposta.equalsIgnoreCase("N")) {
+                    // então retorna o valor inicialmente atribuído (-1)
+                    return politicaDesconto;
+                }
+            } else {
+                System.out.println("Opção inválida!");
+            }
+        } while (!chosen);
+        
+        do {
+                chosen = false;
+                strResposta = Utils.readLineFromConsole("\nDeseja forçar uma dada política de desconto? Se escolher não, será aplicada a melhor política para o cliente actual. (S/N)");
+                if((strResposta.equalsIgnoreCase("S")) || (strResposta.equalsIgnoreCase("N"))) {
+                    chosen = true;
+                    // se não for obrigatório, então escolhe a mais adequada ao cliente
+                    if(strResposta.equalsIgnoreCase("N")) {
+                        politicaDesconto = 0;
+                    } else {
+                        String opcao;
+                        do {
+                            // se for obrigatório ter certas políticas de desconto em vigor
+                            System.out.println("\n1. Política de Desconto 1\n2. Política de Desconto 2");
+                            opcao = Utils.readLineFromConsole("Qual a estratégia de cálculo que pretende aplicar?\n");
+                            
+                            try {
+                                politicaDesconto = new Integer(opcao);
+                            } catch (NumberFormatException nfe) {
+                                politicaDesconto = -2;
+                            }
+
+                            if (politicaDesconto < 1 || politicaDesconto > 3) {
+                                System.out.println("Política inválida (escolha 1, 2 ou 3)!");
+                            }                            
+                        } while (politicaDesconto < 1 && politicaDesconto > 3);
+                    }
+                } else {
+                        System.out.println("Opção inválida!");
+                }
+        } while(!chosen);
+        
+        return politicaDesconto;
+    }
 
     private Cliente registarCliente() {
         RegistarClienteUI registarClienteUI = new RegistarClienteUI(this.m_empresa);
@@ -389,14 +460,14 @@ public class ElaborarContratoUI {
                     if (strNome.isEmpty()) {
                         System.out.println("O nome não pode ser vazio!");
                     }
-                } while (strNome == null);
+                } while (strNome.isEmpty());
 
                 do {
                     strEndereco = Utils.readLineFromConsole("Introduza endereço do condutor: ");
                     if (strEndereco.isEmpty()) {
                         System.out.println("O endereço não pode ser vazio!");
                     }
-                } while (strEndereco == null);
+                } while (strEndereco.isEmpty());
             }
             
             boolean numValido;
